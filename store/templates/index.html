@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load cart %}
+{% load custom_filter %}
+<style>
+/* Showcase */
+ 
+#showcase {
+	position:relative;
+	background: url("/image/download/uploads/products/showcase_1.jpg") no-repeat center center/cover ;
+	min-height:600px;         
+}
+.display-2 {
+	font-size: 15.5rem;
+	font-weight: 300;
+	line-height: 1.2;
+}    
+
+.lead {
+	font-size: 2.25rem;
+	font-weight: 300;
+}
+
+.lead1 {
+	font-size: 3.25rem;
+	font-weight: 300;
+}
+
+.btn-group-lg>.btn, .btn-lg {
+	padding: 1.5rem 3rem;
+	font-size: 2.25rem;
+	line-height: 1.0;
+	border-radius: 0.3rem;
+}
+
+ #showcase .primary-overlay {
+	background:rgba(153,153,153,0.5);
+	position: absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	width:100%;
+   height: 100%;   
+
+}
+
+.main {
+	position: absolute;
+	top: 45%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+
+.location {
+	font-size: 1.25em;
+}
+
+/* Badges */
+
+.badge-danger {
+	height: 3.6vh;
+	font-size:1.0rem;
+	   
+}
+
+.rule {
+   margin:auto;
+   width:70%;
+   border-top: 1px solid #fff;
+}
+
+/*  Card styles */
+
+.form-body {
+	width:100%;
+}
+
+.mySlides {display:none;}
+
+</style>
+</head>
+<!-- body -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<body>
+
+<div class="w3-container">
+  
+
+	<section id="showcase" class="py-5">
+		<div class="primary-overlay text-white">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 col-xs-12 text-center main">
+					
+					<img style="height: 350px;",  src="/image/download/uploads/products/jisaku (2).png" alt="">
+					
+						<p class="lead">WE MAKE YOU LOOK GOOD...!!!</p>
+						<hr class="rule"><br>
+						<p class="lead1">ONLINE CUSTOMIZE STORE</p>
+	
+						
+					
+	
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+		
+	<body>
+	
+		
+		<div class="w3-content w3-display-container">
+		
+		<div class="w3-display-container mySlides">
+		  <img src="/image/download/uploads/products/Display1.jpg" style="width:100%">
+	
+		</div>
+		
+		<div class="w3-display-container mySlides">
+		  <img src="/image/download/uploads/products/Display2.jpg" style="width:100%">
+		</div>
+		
+		<div class="w3-display-container mySlides">
+		  <img src="/image/download/uploads/products/Display3.jpg" style="width:100%">
+		</div>
+	
+		
+		<button class="w3-button w3-display-left w3-black" onclick="plusDivs(-1)">&#10094;</button>
+		<button class="w3-button w3-display-right w3-black" onclick="plusDivs(1)">&#10095;</button>
+		
+		</div>
+		<script>
+			var slideIndex = 1;
+			showDivs(slideIndex);
+			
+			function plusDivs(n) {
+			  showDivs(slideIndex += n);
+			}
+			
+			function showDivs(n) {
+			  var i;
+			  var x = document.getElementsByClassName("mySlides");
+			  if (n > x.length) {slideIndex = 1}
+			  if (n < 1) {slideIndex = x.length}
+			  for (i = 0; i < x.length; i++) {
+				 x[i].style.display = "none";  
+			  }
+			  x[slideIndex-1].style.display = "block";  
+			}
+		</script>
+		
+	 </body>
+
+  <div class="w3-panel w3-white">
+    <p>I am a panel.</p>
+  </div>
+ 
+</div>
+
+</body>
+<div class="container-fluid mt-3">
+	<div class="row">
+
+		
+
+
+		<!-- filter -->
+
+		<div class="col-lg-3 mx-auto">
+			<div class="list-group">
+
+				<a href="/" class="list-group-item list-group-item-action btn btn-outline-success ">All Products</a>
+
+				{% for category in categories %}
+				<a href="/?category={{category.id}}"
+					class="list-group-item list-group-item-action btn btn-outline-success  ">{{category.name}}</a>
+				{% endfor %}
+			</div>
+		</div>
+
+		<!-- all products -->
+		<div id='products' class="col-lg-9 mx-auto">
+			<div class="row mx-auto">
+				{% for product in products %}
+				<div class="card mx-auto mb-3" id={{product.id}} style="width: 18rem;">
+					<img class="card-img-top" src="{{product.image.url}}" alt="Card image cap">
+					<div class="card-body">
+						<p class="card-title">{{product.name}}</p>
+						<p class="card-text"><b>{{product.price|currency}}</b></p>
+						<!-- {{product | is_in_cart:request.session.cart }} -->
+					</div>
+
+					<div class="card-footer p-0 no-gutters">
+
+						{% if product|is_in_cart:request.session.cart %}
+						<div class="row no-gutters">
+							<form action="/#{{product.id}}" class="col-2 " method="post">
+								{% csrf_token %}
+								<input hidden type="text" name='product' value='{{product.id}}'>
+								<input hidden type="text" name='remove' value='True'>
+								<input type="submit" value=" - " class="btn btn-block btn-success border-right">
+							</form>
+							<div class="text-center col btn btn-success">{{product|cart_quantity:request.session.cart}} in Cart</div>
+							<form action="/#{{product.id}}" class="col-2 " method="post">
+								{% csrf_token %}
+								<input hidden type="text" name='product' value='{{product.id}}'>
+								<input type="submit" value=" + " class="btn btn-block btn-success border-left">
+							</form>
+						</div>
+						{% else %}
+						<form action="/#{{product.id}}" method="POST" class="btn-block">
+							{% csrf_token %}
+							<input hidden type="text" name='product' value='{{product.id}}'>
+							<input type="submit" class="float-right btn btn-success form-control"
+								value="Add To Cart">
+						</form>
+						{% endif %}
+
+					</div>
+
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}
